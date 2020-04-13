@@ -1,0 +1,251 @@
+﻿@model HydraMVC.Models.Server
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Details";
+}
+
+@{  //Send the current user into the GetUserPermission method - SH
+    String currUser = User.Identity.GetUserName();
+    var permissionLevel = HydraMVC.Controllers.UserController.GetUserPermission(currUser);
+}
+
+
+@{
+    if(permissionLevel == "Admin" || permissionLevel == "SQA")
+    {
+        <h2>Server Details</h2>
+
+        <div>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.ServerName)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ServerName)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.IpAddress)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.IpAddress)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.BOI)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.BOI)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GameServer)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.GameServer)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.HotFixes)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.HotFixes)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.PlayerVersions)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.PlayerVersions)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ReportServer)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ReportServer)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Notes)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Notes)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Status)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Status)
+                </dd>
+
+                <!--<dt>
+                    @Html.DisplayNameFor(model => model.LoggedInUsers)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.LoggedInUsers)
+                </dd>-->
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ActiveUsers)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ActiveUsers)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.WAP)
+                </dt>
+
+                <dd>
+                    <!--@Html.DisplayFor(model => model.WAP)-->
+                    @HydraMVC.Controllers.MorpheusController.GetMultiSiteStateFromServer(Model.IpAddress)
+                    @HydraMVC.Controllers.MorpheusController.GetMultisitePIDsFromServer(Model.IpAddress)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Rack)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Rack)
+                </dd>
+            </dl>
+        </div>
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+            @Html.ActionLink("Back to List", "Index")
+        </p>
+    }
+    else
+    {
+                <h2>Server Details</h2>
+
+        <div>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.ServerName)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ServerName)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.IpAddress)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.IpAddress)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.BOI)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.BOI)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GameServer)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.GameServer)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.HotFixes)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.HotFixes)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.PlayerVersions)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.PlayerVersions)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ReportServer)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ReportServer)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Notes)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Notes)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Status)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Status)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.LoggedInUsers)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.LoggedInUsers)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ActiveUsers)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ActiveUsers)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.WAP)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.WAP)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Rack)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Rack)
+                </dd>
+            </dl>
+        </div>
+        <p>
+            @Html.ActionLink("Back to List", "Index")
+        </p>
+    }
+}
+

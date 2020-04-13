@@ -1,0 +1,126 @@
+﻿@model HydraMVC.Models.Server
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete Server Row</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Server</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ServerName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ServerName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IpAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IpAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BOI)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BOI)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GameServer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GameServer)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HotFixes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HotFixes)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PlayerVersions)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlayerVersions)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReportServer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReportServer)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Notes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Notes)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <!--<dt>
+            @Html.DisplayNameFor(model => model.LoggedInUsers)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LoggedInUsers)
+        </dd>-->
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ActiveUsers)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ActiveUsers)
+        </dd>
+
+        <!--<dt>
+            @Html.DisplayNameFor(model => model.WAP)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WAP)
+        </dd>-->
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Rack)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Rack)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

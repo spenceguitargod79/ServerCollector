@@ -1,0 +1,31 @@
+﻿
+
+
+@{
+    //The @ symbol tells the editor to use c# here
+    ViewBag.Title = "Links";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3> Cool Links!!!</h3>
+
+<ul>
+    <li> <a href="http://www.google.com">Google</a></li>
+    <li> <a href="http://www.spencerhealy.com">Spencer Healy</a></li>
+    <li> <a href="http://www.yahoo.com">Yahoo</a></li>
+</ul>
+
+<!--Show some data coming from LinksModel.cs and LinksController.cs-->
+@foreach (HydraMVC.Models.LinksModel item in Model)
+{
+    <tr>
+        <td>@item.ID</td><br />
+        <td>@item.Description</td>
+        <td>@item.Comments</td>
+    </tr>
+}
+
+
+
+

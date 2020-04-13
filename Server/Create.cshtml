@@ -1,0 +1,133 @@
+﻿@model HydraMVC.Models.Server
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create New Server Row</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Server</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IpAddress, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IpAddress)
+                @Html.ValidationMessageFor(model => model.IpAddress)
+                <font color="#bf5a16">* REQUIRED FIELD</font>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ServerName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ServerName)
+                @Html.ValidationMessageFor(model => model.ServerName)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BOI, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BOI)
+                @Html.ValidationMessageFor(model => model.BOI)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GameServer, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.GameServer)
+                @Html.ValidationMessageFor(model => model.GameServer)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HotFixes, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.HotFixes)
+                @Html.ValidationMessageFor(model => model.HotFixes)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PlayerVersions, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PlayerVersions)
+                @Html.ValidationMessageFor(model => model.PlayerVersions)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ReportServer, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ReportServer)
+                @Html.ValidationMessageFor(model => model.ReportServer)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Notes, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Notes)
+                @Html.ValidationMessageFor(model => model.Notes)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Status, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Status)
+                @Html.ValidationMessageFor(model => model.Status)
+            </div>
+        </div>
+
+        <!--<div class="form-group">
+            @Html.LabelFor(model => model.LoggedInUsers, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.LoggedInUsers)
+                @Html.ValidationMessageFor(model => model.LoggedInUsers)
+            </div>
+        </div>-->
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ActiveUsers, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ActiveUsers)
+                @Html.ValidationMessageFor(model => model.ActiveUsers)
+            </div>
+        </div>
+
+        <!--<div class="form-group">
+            @Html.LabelFor(model => model.WAP, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.WAP)
+                @Html.ValidationMessageFor(model => model.WAP)
+            </div>
+        </div>-->
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Rack, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Rack)
+                @Html.ValidationMessageFor(model => model.Rack)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

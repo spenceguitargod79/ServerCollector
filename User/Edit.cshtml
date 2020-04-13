@@ -1,0 +1,60 @@
+﻿@model HydraMVC.Models.User
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit User</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.UserId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserName)
+                @Html.ValidationMessageFor(model => model.UserName)
+            </div>
+        </div>
+
+        
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Permission, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <!--@Html.EditorFor(model => model.Permission)-->
+                @Html.DropDownListFor(model => model.Permission, new SelectList(
+                  new List<Object>{
+                       new { value = "Admin" , text = "ADMIN"  },
+                       new { value = "SQA" , text = "SQA" },
+                       new { value = "GUEST" , text = "GUEST"}
+                    },
+                  "value",
+                  "text",
+                   2))
+                @Html.ValidationMessageFor(model => model.Permission)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

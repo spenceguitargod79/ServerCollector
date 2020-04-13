@@ -1,0 +1,33 @@
+﻿@model HydraMVC.Models.User
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>User Details</h2>
+
+<div>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.Permission)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Permission)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.UserId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

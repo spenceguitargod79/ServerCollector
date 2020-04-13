@@ -1,0 +1,408 @@
+﻿@using Microsoft.AspNet.Identity
+<script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
+
+@{
+    ViewBag.Title = "ForceCommand";
+}
+
+@{
+    //Grab the routed data
+    var ipAdd = Request.Params["passedIP"];
+    String currUser = User.Identity.GetUserName();
+
+    //for re-populating fields on page refresh
+    string multiPotPattern = "";
+
+    //initilize with 25 empty string elements, so page doesnt crash on 1st load
+    HydraMVC.Controllers.BingoCardController.InitializeCard();
+    //HydraMVC.Controllers.BingoCardController.ClearCard();
+
+    foreach (string s in HydraMVC.Controllers.FoPatternController.patternListCopy)
+    {
+        multiPotPattern+=s;
+    }
+
+    //If the list is empty, then populate the new list with empty string values, 
+    //if not empty, then copy contents of of numberlistcopy to new list.
+    //This should prevent an out of bounds error down where the bingo card text boxes are declared.
+    //if (HydraMVC.Controllers.BingoCardController.numbersListCopy.Count > 0)
+    //{
+    //    bingoCardNums = HydraMVC.Controllers.BingoCardController.numbersListCopy.ToList();
+    //}
+    //else
+    //{
+    //    //place an empty string in each list element
+    //    HydraMVC.Controllers.BingoCardController.ClearCard();
+    //}
+}
+
+<!---The following css style is 'inline' because using it externally causes desired formatting to be overridden somewhere else.-->
+<style>
+    font-face {
+        font-family: 'Star Jedi Outline';
+        src: local('StarJediOutline.otf');
+    }
+
+    .starwars {
+        font-family: 'Star Jedi Outline';
+    }
+    .border {
+       border:double;
+       padding:4px;
+    }
+    .buttondisabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+</style>
+
+<div class="jumbotron" >
+    <h1 class="starwars">The Force is strong with <font color="#bf5a15">@HydraMVC.Controllers.UserController.getUserFirstName(currUser)!</font></h1>
+    <img src="/Content/Images/Yoda.png" alt="Project Hydra" align="right">
+</div>
+
+<div class="border">
+    <h2><strong><font color="#bf5a16">FORCE CONTROL</font></strong></h2>
+<!--Server info/errors/warnings ---------------------------------------------------------->
+    <h4>Server: @ipAdd</h4>
+
+    @{
+        if (HydraMVC.Controllers.ForceController.IsForceOn(ipAdd) == "ON")
+        {
+            <h4>Force Status: <font color="green"> @HydraMVC.Controllers.ForceController.IsForceOn(ipAdd)</font></h4>
+        }
+        else
+        {
+            <h4>Force Status: <font color="red"> @HydraMVC.Controllers.ForceController.IsForceOn(ipAdd)</font></h4>
+        }
+        <h5><font color="yellow">WARNING:</font> Confirm all users saved their work. The following users could be impacted: <font color="yellow">@HydraMVC.Controllers.ForceController.ImpactedUsers(ipAdd)</font></h5>
+        
+        if(HydraMVC.Controllers.ForceController.GetForceInStateAlready() == true){
+            <h5><font color="yellow">WARNING:</font> An attempt to turn on or off force was made while force is already in the desired state. One of these active users may have altered force state directly on the server: <font color="yellow">@HydraMVC.Controllers.MorpheusController.GetActiveUsers(ipAdd)</font></h5>
+            HydraMVC.Controllers.ForceController.ResetForceInStateAlready();
+        }
+    }
+
+<!--FORCE Buttons---------------------------------------------------------->
+        @{
+            if (HydraMVC.Controllers.ForceController.IsForceOn(ipAdd) == "ON")
+            {
+                <input id="btnOn" class="buttondisabled" disabled type="button" value="FORCE ON" title="Ya can't touch this" />
+                <input id="btnOff" type="button" value="FORCE OFF" />
+            }
+            else if (HydraMVC.Controllers.ForceController.IsForceOn(ipAdd) == "OFF")
+            {
+                <input id="btnOn" type="button" value="FORCE ON" />
+                <input id="btnOff" class="buttondisabled" disabled type="button" value="FORCE OFF" title="Ya can't touch this" />
+            }
+            else
+            {
+                <input id="btnOn" type="button" value="FORCE ON" />
+                <input id="btnOff" type="button" value="FORCE OFF" />
+            }
+        }
+</div>
+
+<script>
+    $("#btnOn").click(function () {
+        $.ajax({
+            url: "/Force/ForceActivate",
+            datatype: "text",
+            data: { 'ipAddress': "@ipAdd", 'choice': 1 },
+            type: "POST",
+            success: function (result) {
+                alert(result);
+            },
+            error: function (result, status, err) {
+                //alert(result.responseText);
+                //alert(status.responseText);
+                //alert(err.Message);
+                alert("FORCE is ON on " + "@ipAdd");
+                window.location.reload();
+            }
+        });
+    });
+    $("#btnOff").click(function () {
+        $.ajax({
+            url: "/Force/ForceActivate",
+            datatype: "text",
+            data: { 'ipAddress': "@ipAdd", 'choice': 2 },
+            type: "POST",
+            success: function (result) {
+                alert(result);
+            },
+            error: function (result, status, err) {
+                //alert(result.responseText);
+                //alert(status.responseText);
+                //alert(err.Message);
+                alert("FORCE is OFF on " + "@ipAdd");
+                window.location.reload();
+            }
+        });
+    });
+</script>
+<!--BINGO Card GUI---------------------------------------------------------->
+<br />
+<div class="border">
+    <h3><font color="#bf5a16">BINGO CARD</font></h3>
+    <form action="">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(0)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(1)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(2)"> 
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(3)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(4)">
+        <br />
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(5)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(6)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(7)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(8)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(9)">
+        <br />
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(10)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(11)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(12)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(13)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(14)">
+        <br />
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(15)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(16)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(17)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(18)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(19)">
+        <br />
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(20)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(21)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(22)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(23)">
+        <input type="text" size="1" maxlength="2" max="75" value="@HydraMVC.Controllers.BingoCardController.GetCardIndexValue(24)">
+        <input type="button" value="Clear Card" id="btnClearCard" title="Clear your card and start anew, erasing everything the card once knew.">
+    </form>
+</div>
+
+<script>
+    //Clear the bingo card using ajax
+    $("#btnClearCard").on('click', function () {
+        $.ajax({
+            url: "/BingoCard/ClearCard",
+            datatype: "text",
+            type: "POST",
+            success: function (result) {
+                alert("Clearing bingo card...");
+            },
+            error: function (result, status, err) {
+                //alert(result.responseText);
+                //alert(status.responseText);
+                //alert(err.Message);
+                //alert("");
+            }
+        });
+        window.location.reload();//refresh page so bingo card picks up current values, which should be empty strings.
+    });
+</script>
+
+<!--Pattern GUI---------------------------------------------------------->
+<div class="border">
+    <h3><font color="#bf5a16">PATTERN</font></h3>
+    <form action="">
+        <input type="checkbox" value="1" />
+        <input type="checkbox" value="2" />
+        <input type="checkbox" value="3" />
+        <input type="checkbox" value="4" />
+        <input type="checkbox" value="5" />
+        <br />
+        <input type="checkbox" value="6" />
+        <input type="checkbox" value="7" />
+        <input type="checkbox" value="8" />
+        <input type="checkbox" value="9" />
+        <input type="checkbox" value="10" />
+        <br />
+        <input type="checkbox" value="11" />
+        <input type="checkbox" value="12" />
+        <input type="checkbox" value="13" />
+        <input type="checkbox" value="14" />
+        <input type="checkbox" value="15" />
+        <br />
+        <input type="checkbox" value="16" />
+        <input type="checkbox" value="17" />
+        <input type="checkbox" value="18" />
+        <input type="checkbox" value="19" />
+        <input type="checkbox" value="20" />
+        <br />
+        <input type="checkbox" value="21" />
+        <input type="checkbox" value="22" />
+        <input type="checkbox" value="23" />
+        <input type="checkbox" value="24" />
+        <input type="checkbox" value="25" />
+        <br />
+        <input type="reset" value="Clear Pattern" title="Clear your pattern and try a new one!">
+        </form>
+        <!--Print to user if card pattern.card submission fails or passes-->
+        @if (HydraMVC.Controllers.PatternController.GetValidationTextResult().Contains("ERROR"))
+        {
+            <font color="red">@HydraMVC.Controllers.PatternController.GetValidationTextResult()</font>
+        }
+        else
+        {
+            <font color="green">@HydraMVC.Controllers.PatternController.GetValidationTextResult()</font>
+        }
+        @HydraMVC.Controllers.PatternController.ResetValidationTextResult()
+        @{
+            if (HydraMVC.Controllers.ForceController.IsForceOn(ipAdd) == "ON")
+            {
+                <br /><input type="button" value="Save Card & Pattern" id="btnSaveCardPattern" title="Fill in all 25 values before saving card">
+            }
+            else if (HydraMVC.Controllers.ForceController.IsForceOn(ipAdd) == "OFF")
+            {
+                <br /><input type="button" value="Save Card & Pattern" id="btnSaveCardPattern" disabled class="buttondisabled" title="This option is disabled when the force is OFF">
+            }
+            else
+            {
+                //do nothing
+            }
+        }
+
+</div>
+@{
+    List<string> bingoCard = new List<string>();
+}
+<script>
+    //Javascript
+    //Get all textbox values
+    $("#btnSaveCardPattern").on('click', function () {
+        var textBox_value = "";
+        $(":text").each(function () {
+            var exists = $(this).is(":text");
+            if (exists) {
+                textBox_value += $(this).val() + "|";
+            }
+        });
+        //alert(checkbox_value);
+        var result = textBox_value.split("|")//split text boxes into a javascript string array
+        var choices = result.toString();
+        
+        //alert("You selected: " + result.toString());
+
+        $.ajax({
+            url: "/BingoCard/SetCard",
+            datatype: "text",
+            data: { 'numbers': textBox_value },
+            type: "POST",
+            success: function (result) {
+                //alert(result);
+            },
+            error: function (result, status, err) {
+                //alert(result.responseText);
+                //alert(status.responseText);
+                //alert(err.Message);
+                //alert("");
+            }
+        });
+        window.location.reload();//refresh page so any err shows to user related to this buttons functionality
+    });
+    $("#btnSaveCardPattern").on('click', function () {
+        var checkbox_value = "";
+        $(":checkbox").each(function () {
+            var ischecked = $(this).is(":checked");
+            if (ischecked) {
+                checkbox_value += $(this).val() + "|";
+            }
+        });
+        //alert(checkbox_value);
+        var result = checkbox_value.split("|")//split checked boxes into a javascript string array
+        var choices = result.toString();
+        //alert("You selected: " + result.toString());
+
+        $.ajax({
+            url: "/Pattern/SetPattern",
+            datatype: "text",
+            data: { 'pattern': checkbox_value, 'ipAddress': "@ipAdd" },
+            type: "POST",
+            success: function (result) {
+                //alert(result);
+            },
+            error: function (result, status, err) {
+                //alert(result.responseText);
+                //alert(status.responseText);
+                //alert(err.Message);
+                //alert("Pattern button clicked");
+            }
+        });
+    });
+</script>
+
+<!-- This section is mainly for forcing 2 progressives at the same time, on 2 separate EPS'
+     This is independent of the players bingo card.-->
+<!--FO.txt numbers GUI---------------------------------------------------------->
+<br />
+<div class="border">
+    <h3><font color="#bf5a16">MULTI-POTS</font></h3>
+    <p><i><font color="#fffff">Utilize this section when forcing a jackpot/progressive on more than 1 machine, simultaneously.
+        Enter progressive win numbers for each EPS you wish to force a jackpot on. Make sure there is a space in-between each number. If duplicate numbers are entered, they will be removed upon submission.</font></i></p>
+    @if (HydraMVC.Controllers.FoPatternController.GetValidationTextResult().Equals("Your numbers have been successfully saved! May the force be with your EPS!"))
+    {
+        <font color="green">@HydraMVC.Controllers.FoPatternController.GetValidationTextResult()</font>
+    }
+    else
+    {
+        <font color="red">@HydraMVC.Controllers.FoPatternController.GetValidationTextResult()</font>
+    }
+    @HydraMVC.Controllers.FoPatternController.ResetValidationTextResult()
+    <form action="">
+        <input type="text" size="50" value="@multiPotPattern">
+        <input type="reset" value="Clear" title="Clear Numbers">
+    </form>
+    @{
+        if (HydraMVC.Controllers.ForceController.IsForceOn(ipAdd) == "ON")
+        {
+            <br /><input type="button" value="Save" id="btnSaveFOPattern" title="Fill in your pattern numbers">
+        }
+        else if (HydraMVC.Controllers.ForceController.IsForceOn(ipAdd) == "OFF")
+        {
+            <br /><input type="button" value="Save" id="btnSaveFOPattern" disabled class="buttondisabled" title="This option is disabled when the force is OFF">
+        }
+        else
+        {
+            //do nothing
+        }
+}
+</div>
+
+@{
+    List<string> foPattern = new List<string>();
+}
+<script>
+    //Javascript
+    //Get all textbox pattern numbers
+    $("#btnSaveFOPattern").on('click', function () {
+        var textBox_value = "";
+        $(":text").each(function () {
+            var exists = $(this).is(":text");
+            if (exists) {
+                textBox_value = $(this).val();
+            }
+        });
+        //alert(checkbox_value);
+        var result = textBox_value
+        var choices = result.toString();
+
+        //alert("You selected: " + result.toString());
+
+        $.ajax({
+            url: "/FoPattern/SetPattern",
+            datatype: "text",
+            data: { 'pattern': textBox_value, 'ipAddress': "@ipAdd" },
+            type: "POST",
+            success: function (result) {
+                //alert(result);
+                
+            },
+            error: function (result, status, err) {
+                //alert(result.responseText);
+                //alert(status.responseText);
+                //alert(err.Message);
+            }
+        });
+        window.location.reload();//refresh page so any err shows to user
+    });
+    </script>

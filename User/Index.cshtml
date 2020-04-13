@@ -1,0 +1,55 @@
+﻿@model IEnumerable<HydraMVC.Models.User>
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@{
+    String currUser = User.Identity.GetUserName();
+
+    var permissionLevel = HydraMVC.Controllers.UserController.GetUserPermission(currUser);
+  
+}
+<!--Displays data based on user priveledges - SIH-->
+@{if (permissionLevel == "Admin") { 
+      
+              <h2>Hydra Users @Html.ActionLink("+", "Create")</h2>
+
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Permission)
+                </th>
+                <th></th>
+            </tr>
+
+        @foreach (var item in Model) {
+            <tr class="notfirst">
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Permission)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id=item.UserId }) |
+                    @Html.ActionLink("Details", "Details", new { id=item.UserId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id=item.UserId })
+                </td>
+            </tr>
+        }
+
+        </table>
+      
+  }
+  else
+  {
+      <img src="/Content/Images/noPass.jpg" alt="You do not have access to this page"  style="width:334px;height:488px;">
+      <h5>Contact: <a href="mailto:tpatel@playags.com" target="_top">tpatel@playags.com</a></h5>
+      <h4>@Html.ActionLink("Go Back", "Index", "Server")</h4>
+  }
+}

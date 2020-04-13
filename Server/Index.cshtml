@@ -1,0 +1,435 @@
+﻿@model IEnumerable<HydraMVC.Models.Server>
+@using Microsoft.AspNet.Identity
+
+
+@{
+    ViewBag.Title = "Server Details";
+   
+}
+
+@{  //Send the current user into the GetUserPermission method - SH
+    String currUser = User.Identity.GetUserName();
+    var permissionLevel = HydraMVC.Controllers.UserController.GetUserPermission(currUser);
+    bool userExists = false;
+    if (permissionLevel != "ACCESS-DENIED")//GetUserPermission() will return this string if an exception occurs
+    {
+        userExists = true;
+    }
+    else
+    {
+        userExists = false;
+    }
+    
+ }
+
+<!--Reset the pattern message variables each time the user visits this page.
+    This prevents an old message displaying on force control when they revisit the page.-->
+@HydraMVC.Controllers.FoPatternController.ResetValidationTextResult()
+@HydraMVC.Controllers.PatternController.ResetValidationTextResult()
+
+<!--Displays data based on user priveledges - SIH-->
+<!--If the username does not exist in the User table, deny access-->
+@{if (userExists)
+{
+    if (permissionLevel == "Admin")
+    {//ADMIN
+        <div class="jumbotron">
+            <h5><i>@HydraMVC.Controllers.ServerController.SQAQuote()</i></h5>
+            <h1>Welcome to Hydra, @HydraMVC.Controllers.UserController.getUserFirstName(currUser)!</h1>
+            <img src="/Content/Images/GreenLogo.png" alt="Project Hydra" align="right" style="width:204px;height:128px;">
+        </div>
+        <h2>Server Details @Html.ActionLink("+", "Create")</h2>
+
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ServerName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IpAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BOI)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.GameServer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.HotFixes)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PlayerVersions)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReportServer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Notes)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <!--<th>
+                    @Html.DisplayNameFor(model => model.LoggedInUsers)
+                </th>-->
+                <th>
+                    @Html.DisplayNameFor(model => model.ActiveUsers)
+                </th>
+                <!--<th>
+                    @Html.DisplayNameFor(model => model.WAP)
+                </th>-->
+                <th>
+                    @Html.DisplayNameFor(model => model.Rack)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+
+                <tr class="notfirst">
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.ServerName)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.IpAddress)
+                    </td>
+                    <td class="trunc" style="max-width:50px">
+                        @Html.DisplayFor(modelItem => item.BOI)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.GameServer)
+                    </td>
+                    <td class="trunc" style="max-width:75px">
+                        @Html.DisplayFor(modelItem => item.HotFixes)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.PlayerVersions)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.ReportServer)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.Notes)
+                    </td>
+                    <td class="trunc" style="max-width:75px">
+                        @try
+                        {
+                            if (item.Status.Equals("OFFLINE"))
+                            {
+                                <span style=" background-color:red">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </span>
+                            }
+                            else if (item.Status.Equals("ONLINE"))
+                            {
+                                <span style=" background-color:green">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </span>
+                            }
+                        }
+                        catch
+                        {
+                            //item.status was empty
+                        }
+                    </td>
+                    <!--<td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.LoggedInUsers)
+                    </td>-->
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.ActiveUsers)
+                    </td>
+                    <!--<td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.WAP)
+                    </td>-->
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.Rack)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                        <!-- Use actionlink to pass ipaddress to the force index page-->
+                        @{
+                            if (HydraMVC.Controllers.ForceController.IsForceOn(item.IpAddress) == "ON")
+                            {
+
+                                @Html.ActionLink("Force", "Index", "Force/", new { passedIP = item.IpAddress }, new {Style = "color:Green;" })
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Force", "Index", "Force/", new { passedIP = item.IpAddress }, new { Style = "color:Red;" })
+                            }
+                         }
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else if (permissionLevel == "SQA")
+    {//SQA
+        <div class="jumbotron">
+            <h5><i>@HydraMVC.Controllers.ServerController.SQAQuote()</i></h5>
+            <h1>Welcome to Hydra, @HydraMVC.Controllers.UserController.getUserFirstName(currUser)!</h1>
+            <img src="/Content/Images/YellowLogo.png" alt="Project Hydra" align="right" style="width:204px;height:128px;">
+        </div>
+        <h2>Server Details</h2>
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ServerName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IpAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BOI)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.GameServer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.HotFixes)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PlayerVersions)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReportServer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Notes)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <!--<th>
+                    @Html.DisplayNameFor(model => model.LoggedInUsers)
+                </th>-->
+                <th>
+                    @Html.DisplayNameFor(model => model.ActiveUsers)
+                </th>
+                <!--<th>
+                    @Html.DisplayNameFor(model => model.WAP)
+                </th>-->
+                <th>
+                    @Html.DisplayNameFor(model => model.Rack)
+                </th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr class="notfirst">
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.ServerName)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.IpAddress)
+                    </td>
+                    <td class="trunc" style="max-width:50px">
+                        @Html.DisplayFor(modelItem => item.BOI)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.GameServer)
+                    </td>
+                    <td class="trunc" style="max-width:75px">
+                        @Html.DisplayFor(modelItem => item.HotFixes)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.PlayerVersions)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.ReportServer)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.Notes)
+                    </td>
+                    <td class="trunc" style="max-width:75px">
+                        @try
+                        {
+                            if (item.Status.Equals("OFFLINE"))
+                            {
+                                <span style=" background-color:red">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </span>
+                            }
+                            else if (item.Status.Equals("ONLINE"))
+                            {
+                                <span style=" background-color:green">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </span>
+                            }
+                        }
+                        catch
+                        {
+                            //item.status was empty
+                        }
+                    </td>
+                    <!--<td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.LoggedInUsers)
+                    </td>-->
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.ActiveUsers)
+                    </td>
+                    <!--<td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.WAP)
+                    </td>-->
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.Rack)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.Id })
+
+                        <!-- Use actionlink to pass ipaddress to the force index page-->
+                        @{
+                            if (HydraMVC.Controllers.ForceController.IsForceOn(item.IpAddress) == "ON")
+                            {
+
+                                @Html.ActionLink("Force", "Index", "Force/", new { passedIP = item.IpAddress }, new { Style = "color:Green;" })
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Force", "Index", "Force/", new { passedIP = item.IpAddress }, new { Style = "color:Red;" })
+                            }
+                        }
+                    </td>
+
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <div class="jumbotron">
+            <h5><i>@HydraMVC.Controllers.ServerController.SQAQuote()</i></h5>
+            <h1>Welcome to Hydra, @HydraMVC.Controllers.UserController.getUserFirstName(currUser)!</h1>
+            <img src="/Content/Images/RedLogo.png" alt="Project Hydra" align="right" style="width:204px;height:128px;">
+        </div>
+        <h2>Server Details</h2>//VIEW ONLY
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ServerName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IpAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BOI)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.GameServer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.HotFixes)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PlayerVersions)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReportServer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Notes)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <!--<th>
+                    @Html.DisplayNameFor(model => model.LoggedInUsers)
+                </th>-->
+                <th>
+                    @Html.DisplayNameFor(model => model.ActiveUsers)
+                </th>
+                <!--<th>
+                    @Html.DisplayNameFor(model => model.WAP)
+                </th>-->
+                <th>
+                    @Html.DisplayNameFor(model => model.Rack)
+                </th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr class="notfirst">
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.ServerName)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.IpAddress)
+                    </td>
+                    <td class="trunc" style="max-width:50px">
+                        @Html.DisplayFor(modelItem => item.BOI)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.GameServer)
+                    </td>
+                    <td class="trunc" style="max-width:75px">
+                        @Html.DisplayFor(modelItem => item.HotFixes)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.PlayerVersions)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.ReportServer)
+                    </td>
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.Notes)
+                    </td>
+                    <td class="trunc" style="max-width:75px">
+                        @try
+                        {
+                            if (item.Status.Equals("OFFLINE"))
+                            {
+                                <span style=" background-color:red">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </span>
+                            }
+                            else if (item.Status.Equals("ONLINE"))
+                            {
+                                <span style=" background-color:green">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </span>
+                            }
+                        }
+                        catch
+                        {
+                            //item.status was empty
+                        }
+                    </td>
+                    <!--<td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.LoggedInUsers)
+                    </td>-->
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.ActiveUsers)
+                    </td>
+                    <!--<td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.WAP)
+                    </td>-->
+                    <td class="trunc" style="max-width:2px">
+                        @Html.DisplayFor(modelItem => item.Rack)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Details", "Details", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+}
+else
+{
+    //log out user so nav bar isnt visible
+    FormsAuthentication.SignOut();
+
+    <img src="/Content/Images/noPass.jpg" alt="You do not have access - contact admin to request access" style="width:334px;height:488px;">
+    <br />
+    <br />
+    <img src="/Content/Images/accessDenied.png" alt="You do not have access - contact admin to request access">
+    <h5>Contact: <a href="mailto:tpatel@playags.com" target="_top">tpatel@playags.com</a></h5>
+    <h4>@Html.ActionLink("TRY AGAIN", "Index", "Server")</h4>
+}
+  
+}
+

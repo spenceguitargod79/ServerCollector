@@ -1,0 +1,220 @@
+﻿@model HydraMVC.Models.Server
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@{  //Send the current user into the GetUserPermission method - SH
+    String currUser = User.Identity.GetUserName();
+    var permissionLevel = HydraMVC.Controllers.UserController.GetUserPermission(currUser);
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+
+    @Html.AntiForgeryToken()
+    //Display editable server fields based on user priveledge
+    if (permissionLevel == "Admin")//admin view
+    {
+        <div class="form-horizontal">
+            <h4>Server Details (Admin)</h4>
+            <hr />
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ServerName, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ServerName)
+                    @Html.ValidationMessageFor(model => model.ServerName)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.IpAddress, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.IpAddress)
+                    @Html.ValidationMessageFor(model => model.IpAddress)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.BOI, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.BOI)
+                    @Html.ValidationMessageFor(model => model.BOI)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.GameServer, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.GameServer)
+                    @Html.ValidationMessageFor(model => model.GameServer)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.HotFixes, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.HotFixes)
+                    @Html.ValidationMessageFor(model => model.HotFixes)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PlayerVersions, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.PlayerVersions)
+                    @Html.ValidationMessageFor(model => model.PlayerVersions)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ReportServer, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ReportServer)
+                    @Html.ValidationMessageFor(model => model.ReportServer)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Notes, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Notes)
+                    @Html.ValidationMessageFor(model => model.Notes)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Status, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Status)
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+            </div>
+
+            <!--<div class="form-group">
+                @Html.LabelFor(model => model.LoggedInUsers, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.LoggedInUsers)
+                    @Html.ValidationMessageFor(model => model.LoggedInUsers)
+                </div>
+            </div>-->
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ActiveUsers, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ActiveUsers)
+                    @Html.ValidationMessageFor(model => model.ActiveUsers)
+                </div>
+            </div>
+
+            <!--<div class="form-group">
+                @Html.LabelFor(model => model.WAP, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.WAP)
+                    @Html.ValidationMessageFor(model => model.WAP)
+                </div>
+            </div>-->
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Rack, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Rack)
+                    @Html.ValidationMessageFor(model => model.Rack)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+    else//SQA view
+    {
+       <div class="form-horizontal">
+            <h4>Server Details (SQA)</h4> 
+           <h5>Server: @Html.ValueFor(model => model.ServerName)</h5>
+            <hr />
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.Id)
+
+           <!--Hide some fields (SQA user can only edit specific fields), but keep them in the background so they get saved properly-->
+           <!--ServerName-->
+           @Html.HiddenFor(model => model.ServerName)
+           @Html.ValidationMessageFor(model => model.ServerName)
+                
+           <!--IpAddress-->
+           @Html.HiddenFor(model => model.IpAddress)
+           @Html.ValidationMessageFor(model => model.IpAddress)
+
+           <!--BOI-->
+           @Html.HiddenFor(model => model.BOI)
+           @Html.ValidationMessageFor(model => model.BOI)
+
+           <!--GameServer-->
+           @Html.HiddenFor(model => model.GameServer)
+           @Html.ValidationMessageFor(model => model.GameServer)
+
+           <!--HotFixes-->
+           @Html.HiddenFor(model => model.HotFixes)
+           @Html.ValidationMessageFor(model => model.HotFixes)
+
+           <!--HotFixes-->
+           @Html.HiddenFor(model => model.PlayerVersions)
+           @Html.ValidationMessageFor(model => model.PlayerVersions)
+
+           <!--ReportServer-->
+           @Html.HiddenFor(model => model.ReportServer)
+           @Html.ValidationMessageFor(model => model.ReportServer)
+
+           <!--Notes - editable by SQA user-->
+            <div class="form-group">
+                @Html.LabelFor(model => model.Notes, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Notes)
+                    @Html.ValidationMessageFor(model => model.Notes)
+                </div>
+            </div>
+           <!--Status-->
+           @Html.HiddenFor(model => model.Status)
+           @Html.ValidationMessageFor(model => model.Status)
+
+           <!--LoggedInUsers-->
+           <!--@Html.HiddenFor(model => model.LoggedInUsers)
+           @Html.ValidationMessageFor(model => model.LoggedInUsers)-->
+
+           <!--ActiveUsers - editable by SQA user-->
+            <div class="form-group">
+                @Html.LabelFor(model => model.ActiveUsers, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ActiveUsers)
+                    @Html.ValidationMessageFor(model => model.ActiveUsers)
+                </div>
+            </div>
+           <!--WAP-->
+           <!--@Html.HiddenFor(model => model.WAP)
+           @Html.ValidationMessageFor(model => model.WAP)-->
+
+           <!--Rack-->
+           @Html.HiddenFor(model => model.Rack)
+           @Html.ValidationMessageFor(model => model.Rack)
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
